@@ -1,0 +1,36 @@
+# --- Environment & Secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Virtual environments
+venv/
+.env/
+.venv/
+env/
+ENV/
+
+# --- VS Code ---
+.vscode/
+*.code-workspace
+
+# --- OS Files ---
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+*.log
+
+# --- GitHub Actions Cache ---
+.github/workflows/*.tmp
