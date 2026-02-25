@@ -17,18 +17,19 @@ def _template_tweet(title: str, url: str, deal_price: Optional[float], currency:
         parts.append(f"Now {price_str}!")
     parts.append(url)
     tweet = " — ".join(parts)
-    # ensure <=280 chars
-    if len(tweet) > 280:
-        # truncate title
-        max_title = 280 - (len(tweet) - len(title)) - 3
+    if len(tweet) > MAX_POST_CHARS:
+        max_title = MAX_POST_CHARS - (len(tweet) - len(title)) - 3
         title_short = title[: max(0, max_title)] + "..."
         parts[0] = title_short
         tweet = " — ".join(parts)
     return tweet
 
 
+MAX_POST_CHARS = int(os.getenv("MAX_POST_CHARS", "500"))  # 500 for Threads, 280 for Twitter
+
+
 def generate_tweet(product: object, style: Optional[str] = None) -> str:
-    """Generate a short tweet for a product. Tries LLM provider when configured,
+    """Generate a short post for a product. Tries LLM provider when configured,
     otherwise falls back to a template.
 
     `product` is expected to have attributes: `title`, `url`, `deal_price`, `price`, `currency`, `tags`.
@@ -58,7 +59,7 @@ def generate_tweet(product: object, style: Optional[str] = None) -> str:
                     {"role": "user", "content": user},
                 ],
                 "temperature": 0.7,
-                "max_tokens": 120,
+                "max_tokens": 180,
             }
 
             headers = {
@@ -75,8 +76,8 @@ def generate_tweet(product: object, style: Optional[str] = None) -> str:
                 # Ensure URL is included; simple safeguard
                 if url and url not in text:
                     text = text.rstrip() + " " + url
-                if len(text) > 280:
-                    text = text[:277] + "..."
+                if len(text) > MAX_POST_CHARS:
+                    text = text[:MAX_POST_CHARS - 3] + "..."
                 return text
         except Exception:
             # fall through to template

@@ -9,6 +9,8 @@ from typing import List
 from utils import read_products, Product
 from llm import generate_tweet
 from twitter_client import TwitterClient
+from threads_client import ThreadsClient
+from fetch_deals import fetch_deals, write_to_csv
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +66,14 @@ class Bot:
 			print(f"Failed to post {product.url}: {e}")
 			return False
 
+	def _refresh_deals(self):
+		rows = fetch_deals()
+		added = write_to_csv(rows, self.products_csv)
+		if added:
+			logger.info("Fetched %d new deals into %s", added, self.products_csv)
+
 	def run_once(self, limit: int = 1):
+		self._refresh_deals()
 		products = self.select_products()
 		posted = 0
 		for p in products:
@@ -94,7 +103,11 @@ def main():
 
 	logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"))
 
-	client = TwitterClient()
+	platform = os.getenv("PLATFORM", "threads").lower()
+	if platform == "twitter":
+		client = TwitterClient()
+	else:
+		client = ThreadsClient()
 	bot = Bot(args.csv, client)
 
 	if args.once:

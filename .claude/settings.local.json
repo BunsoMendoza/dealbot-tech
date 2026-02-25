@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(venv/Scripts/pip install pytest -q)",
+      "Bash(venv/Scripts/python -m pytest tests/ -v)",
+      "Bash(venv/Scripts/python llm.py)",
+      "Bash(venv/Scripts/pip install feedparser -q)",
+      "Bash(venv/Scripts/python fetch_deals.py --dry-run --limit 10)",
+      "Bash(venv/Scripts/python fetch_deals.py --dry-run --limit 20)",
+      "WebFetch(domain:www.postman.com)",
+      "WebFetch(domain:getlate.dev)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:docs.threads.com)",
+      "WebFetch(domain:blog.nevinpjohn.in)",
+      "WebFetch(domain:www.ayrshare.com)"
+    ]
+  }
+}
