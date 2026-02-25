@@ -1,0 +1,15 @@
+[Unit]
+Description=DealBot Twitter posting service
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/dealbot
+ExecStart=/opt/dealbot/.venv/bin/python /opt/dealbot/bot.py --interval 60 --limit 1
+Restart=on-failure
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=/opt/dealbot/.env
+
+[Install]
+WantedBy=multi-user.target
